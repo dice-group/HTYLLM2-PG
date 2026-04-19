@@ -4,3 +4,11 @@ __pycache__/
 .env
 cmds.txt
 .vscode/
+
+# Models & outputs
+outputs/
+*.bin
+*.safetensors
+
+# HuggingFace cache (just in case)
+.cache/
