@@ -10,7 +10,7 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 model.to(device)
 model.eval()
 
-print("\n🧠 Chat listo (Spanish supported)\n")
+print("\n Chat listo (Spanish supported)\n")
 
 while True:
     prompt = input("Prompt: ")
