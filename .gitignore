@@ -3,4 +3,5 @@ __pycache__/
 *.pyc
 .env
 cmds.txt
-.vscode/
+.vscode/.DS_Store
+.idea/
