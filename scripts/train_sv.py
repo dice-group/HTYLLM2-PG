@@ -1,1 +1,0 @@
-# Training script for Swedish language model
