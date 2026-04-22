@@ -13,7 +13,8 @@ from transformers import (
 
 MAX_LEN = 128
 VOCAB_SIZE = 20000
-NUM_ARTICLES = 10000
+
+NUM_ARTICLES = 20000
 
 MODEL_DIR = "model_es"
 TOKENIZER_DIR = "tokenizer_es"
@@ -44,6 +45,8 @@ def train_tokenizer(texts):
 
     tokenizer.save_model(TOKENIZER_DIR)
 
+
+def load_tokenizer():
     bpe = ByteLevelBPETokenizer(
         f"{TOKENIZER_DIR}/vocab.json",
         f"{TOKENIZER_DIR}/merges.txt"
@@ -102,9 +105,9 @@ def build_model():
     config = GPT2Config(
         vocab_size=VOCAB_SIZE,
         n_positions=MAX_LEN,
-        n_embd=384,
-        n_layer=6,
-        n_head=6
+        n_embd=512,
+        n_layer=8,
+        n_head=8
     )
 
     model = GPT2LMHeadModel(config)
@@ -145,12 +148,12 @@ def generate(model, tokenizer, prompt):
 
     output = model.generate(
         **inputs,
-        max_length=80,
+        max_length=100,
         do_sample=True,
-        top_k=50,
+        top_k=40,
         top_p=0.9,
-        temperature=0.8,
-        repetition_penalty=1.1,
+        temperature=0.7,        
+        repetition_penalty=1.2, 
         pad_token_id=tokenizer.pad_token_id
     )
 
@@ -174,8 +177,12 @@ if __name__ == "__main__":
     print("Loading dataset...")
     texts = load_data()
 
-    print("Training tokenizer...")
-    tokenizer = train_tokenizer(texts)
+    if not os.path.exists(f"{TOKENIZER_DIR}/vocab.json"):
+        print("Training tokenizer...")
+        train_tokenizer(texts)
+
+    print("Loading tokenizer...")
+    tokenizer = load_tokenizer()
 
     print("Building dataset...")
     dataset = build_dataset(texts, tokenizer)

@@ -195,6 +195,3 @@ if __name__ == "__main__":
 
     print("Starting chat...")
     chat(model, tokenizer)
-
-
-#pip install torch transformers datasets tokenizers accelerate
