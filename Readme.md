@@ -114,6 +114,33 @@ Just pull the latest code from `ice-breaker` branch to get this.
 
 ---
 
+## 💻 Model Strategy 
+
+The project includes multiple types of language models:
+
+* Language-specific models: German, French, Swedish, Italian, Spanish
+
+* One multilingual model trained on all languages combined
+
+### Comparison Goal
+
+The objective is to compare:
+
+* Specialized models trained on a single language
+* A multilingual model trained on all datasets
+
+This helps evaluate whether:
+
+* Language-specific models perform better on their own language
+* The multilingual model can generalize across multiple languages
+
+### Team Responsibility
+
+* team-1: Swedish, Italian, Spanish
+* team-2: German, French, Multilingual model
+
+---
+
 ## 🌿 Branch Strategy
 
 * `main` → stable code
