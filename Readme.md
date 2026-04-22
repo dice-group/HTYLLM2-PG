@@ -122,7 +122,7 @@ The project includes multiple types of language models:
 
 * One multilingual model trained on all languages combined
 
-### Comparison Goal
+### 🎯 Comparison Goal
 
 The objective is to compare:
 
@@ -134,7 +134,7 @@ This helps evaluate whether:
 * Language-specific models perform better on their own language
 * The multilingual model can generalize across multiple languages
 
-### Team Responsibility
+### 👥 Team Responsibility
 
 * team-1: Swedish, Italian, Spanish
 * team-2: German, French, Multilingual model
