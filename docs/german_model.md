@@ -102,9 +102,3 @@ This model is used to:
 * Learn German-specific language patterns
 * Generate German text
 * Compare performance with the multilingual model
-
----
-
-
-The model is trained from scratch (not fine-tuned), which allows full control over architecture and training but may require more data and training time.
-
