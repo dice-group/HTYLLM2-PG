@@ -5,16 +5,7 @@ def filter_empty(example):
     return example["text"] is not None and example["text"].strip() != ""
 
 
-def tokenize_function(example, tokenizer):
-    return  tokenizer(
-        example["text"],
-        truncation=True,
-        padding=False
-    )
-
-
 def prepare_dataset(dataset, model_name="distilgpt2"):
-    # remove empty
     dataset = dataset.filter(filter_empty)
 
     tokenizer = AutoTokenizer.from_pretrained(model_name)
@@ -29,7 +20,7 @@ def prepare_dataset(dataset, model_name="distilgpt2"):
         batched=True,
         remove_columns=["text"]
     )
-    
-    tokenized_dataset.set_format(type="torch")
-    return tokenized_dataset, tokenizer
 
+    tokenized_dataset.set_format(type="torch")
+
+    return tokenized_dataset, tokenizer

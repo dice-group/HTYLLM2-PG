@@ -28,7 +28,7 @@
 #     main()
 
 from data.de.dataset import load_german_dataset
-from data.preprocessing import prepare_dataset
+from utils.preprocessing import prepare_dataset
 
 
 def main():
