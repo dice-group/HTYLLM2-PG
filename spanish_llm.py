@@ -13,7 +13,6 @@ from transformers import (
 
 MAX_LEN = 128
 VOCAB_SIZE = 20000
-
 NUM_ARTICLES = 20000
 
 MODEL_DIR = "model_es"
@@ -143,7 +142,14 @@ def train_model(model, dataset, tokenizer):
 def generate(model, tokenizer, prompt):
     model.eval()
 
+    if not prompt or len(prompt.strip()) == 0:
+        return " Please enter valid text."
+
     inputs = tokenizer(prompt, return_tensors="pt")
+
+    if inputs["input_ids"].shape[1] == 0:
+        return " Tokenization failed."
+
     inputs = {k: v.to(device) for k, v in inputs.items()}
 
     output = model.generate(
@@ -152,25 +158,35 @@ def generate(model, tokenizer, prompt):
         do_sample=True,
         top_k=40,
         top_p=0.9,
-        temperature=0.7,        
-        repetition_penalty=1.2, 
-        pad_token_id=tokenizer.pad_token_id
+        temperature=0.7,
+        repetition_penalty=1.2,
+        pad_token_id=tokenizer.pad_token_id,
+        eos_token_id=tokenizer.eos_token_id
     )
 
     return tokenizer.decode(output[0], skip_special_tokens=True)
 
 def chat(model, tokenizer):
-    print("\n Chat ready. Type 'exit' to stop.\n")
+    print("\n🤖 Chat ready. Type 'exit' to stop.\n")
 
     while True:
-        prompt = input("You: ")
+        try:
+            prompt = input("You: ").strip()
 
-        if prompt.lower() in ["exit", "quit"]:
-            break
+            if not prompt:
+                print(" Empty input, try again.")
+                continue
 
-        response = generate(model, tokenizer, prompt)
-        print("AI:", response)
-        print()
+            if prompt.lower() in ["exit", "quit"]:
+                break
+
+            response = generate(model, tokenizer, prompt)
+            print("AI:", response)
+            print()
+
+        except Exception as e:
+            print(" Error occurred:", str(e))
+            continue
 
 if __name__ == "__main__":
 
