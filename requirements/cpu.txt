@@ -1,0 +1,5 @@
+# CPU-specific dependencies
+# pip install -r requirements/cpu.txt
+-r base.txt
+
+torch==2.5.1
