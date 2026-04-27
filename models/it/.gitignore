@@ -1,0 +1,10 @@
+# macOS junk
+.DS_Store
+
+# model files
+italian_scratch_vm/
+models/
+*.pt
+*.bin
+*.safetensors
+checkpoint-*/
