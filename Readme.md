@@ -209,7 +209,64 @@ We use a standardized script to safely run training on specific GPUs.
 
 ---
 
-## ✅ Notes
+## ֎ 8. Trained Models Storage Info
+
+All models are stored in: `/data/HTYLLM2/models/`
+
+### Structure
+```
+/data/HTYLLM2/models/
+└── distilgpt2/
+    ├── v1/
+    │   ├── de/
+    │   ├── fr/
+    │   ├── es/
+    │   ├── it/
+    │   ├── en/
+    │   └── multilingual/
+    ├── v2/
+    └── v3/
+```
+
+### ⚠️ Notes
+- Do not overwrite models
+- Always create a new version (v2, v3, etc.)
+- Keep consistent folder naming
+
+---
+
+## 🔄 Move Trained Model Guideline
+
+After training models on the GPU server, transfer them to the shared working VM storage.
+
+#### ✅ Step 1: Authenticate on work VM
+
+```bash
+kinit <username>@UNI-PADERBORN.DE
+```
+
+#### ✅ Step 2: Transfer Model using SCP
+
+Example (German model):
+
+```bash
+scp -r <username>@enexa1.cs.uni-paderborn.de:~/HTYLLM2-PG/outputs/de_model/* /data/HTYLLM2/models/distilgpt2/v1/de/
+```
+
+### ⚠️ Important Notes
+- Always run kinit before using scp
+- Use * at the end to copy only contents (avoid nested folders)
+- Ensure destination folder exists before copying
+- Do not overwrite existing models — create new version folders to keep track of version( eg:- v2, v3, etc...)
+- Verify transfer after copying:
+
+```bash
+ls /data/HTYLLM2/models/distilgpt2/v1/de
+```
+
+
+
+## 🚨 Important Key Notes before working
 
 - Always activate venv before working.
 - Pull latest changes before starting work.
