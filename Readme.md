@@ -88,12 +88,47 @@ It should point to:
 ```
 
 ---
+## 🧠 5. Dependency Structure Info
 
-## 📦 5. Install Dependencies
+We maintain clean and portable dependency management:
+
+```
+requirements/
+├── base.txt   # Common dependencies (shared across all environments)
+├── cpu.txt    # CPU-specific setup
+├── gpu.txt    # GPU-specific setup (CUDA-enabled)
+```
+
+
+### ✅ Guidelines
+
+- `base.txt` → only project-level dependencies
+- `cpu.txt` → CPU-compatible PyTorch
+- `gpu.txt` → CUDA-enabled PyTorch
+- Avoid committing environment-specific packages (`nvidia-*`, `cuda-*`)
+
+---
+
+## 📦 Install Dependencies
+
+We use **separate environments for CPU and GPU** to ensure compatibility and clean dependency management.
+
+### 🔹 CPU Environment (Work VM)
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements/cpu.txt
 ```
+
+### 🔹 GPU Environment (GPU VM)
+
+```bash
+pip install -r requirements/gpu.txt
+```
+
+## ⚠️ Important Notes
+* Do **NOT** use pip freeze > requirements.txt
+* Do **NOT** add nvidia-* or cuda-* packages manually
+* torch is installed separately depending on environment (CPU vs GPU)
 
 ---
 
@@ -125,9 +160,61 @@ Just pull the latest code from `ice-breaker` branch to get this.
 
 ---
 
+## 🧩 Code Structure & Pipeline
+
+The project has been refactored to support a **common training pipeline** across models.
+
+### ✅ Key Improvements
+
+- Unified training pipeline for all models
+- Modular structure for:
+  - preprocessing
+  - training
+  - evaluation
+- Reusable components for scalability
+- Cleaner separation of concerns
+
+### 📌 Goal
+
+- Simplify experimentation across different models
+- Ensure consistency in training workflows
+- Improve maintainability for team collaboration
+
+---
+
+## ⚡ 7. GPU Usage Guidelines
+
+- Always confirm which GPU is available before running experiments
+- Use only assigned GPU (e.g., GPU 1 if GPU 0 is reserved)
+- Monitor usage using: `nvidia-smi`
+- Avoid running processes on GPUs assigned to others ⚠️
+
+
+
+
+## 🏃 Run Training
+
+We use a standardized script to safely run training on specific GPUs.
+
+### 📄 Script
+
+```bash
+./run_train.sh [GPU_IDs]
+```
+
+### ⚠️ Notes
+- The script will always ask for confirmation before running
+- Ensures safe usage in shared GPU environments
+- Avoids accidental usage of restricted GPUs
+
+---
+
 ## ✅ Notes
 
-* Always activate venv before working.
-* Pull latest changes before starting work.
+- Always activate venv before working.
+- Pull latest changes before starting work.
+- Use `run_train.sh` for all training runs
+- Do not commit environment-specific dependencies
+- Follow GPU usage guidelines in shared environments
 
 ---
