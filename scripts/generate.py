@@ -1,9 +1,9 @@
-# python -m scripts.generate --lang de --prompt "Die Geschichte beginnt"
-# python -m scripts.generate --lang fr --prompt "L'histoire commence"
-# python -m scripts.generate --lang es --prompt "La historia comienza"
-# python -m scripts.generate --lang it --prompt "La storia inizia"
-# python -m scripts.generate --lang sv --prompt "Historien börjar"
-# python -m scripts.generate --lang multi --prompt "Die Geschichte beginnt"/"L'histoire commence"/"La historia comienza"/"La storia inizia"/"Historien börjar"
+# python -m scripts.generate --lang de --version v1 --prompt "Die Geschichte beginnt"
+# python -m scripts.generate --lang fr --version v1 --prompt "L'histoire commence"
+# python -m scripts.generate --lang es --version v1 --prompt "La historia comienza"
+# python -m scripts.generate --lang it --version v1 --prompt "La storia inizia"
+# python -m scripts.generate --lang sv --version v1 --prompt "Historien börjar"
+# python -m scripts.generate --lang multi --version v1 --prompt "Die Geschichte beginnt"/"L'histoire commence"/"La historia comienza"/"La storia inizia"/"Historien börjar"
 import argparse
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
@@ -17,7 +17,7 @@ def main():
         "--lang",
         type=str,
         required=True,
-        help="Language model to use (de, fr, es, etc.)"
+        help="Language model to use (de, fr, es, it, sv, multilingual)"
     )
 
     parser.add_argument(
@@ -27,9 +27,17 @@ def main():
         help="Input prompt text"
     )
 
+    parser.add_argument(
+        "--version",
+        type=str,
+        default="v1",
+        help="Model version (default: v1)"
+    )
+
     args = parser.parse_args()
 
-    model_path = f"./outputs/{args.lang}_model"
+    base_path = "/data/HTYLLM2/models/distilgpt2"
+    model_path = f"{base_path}/{args.version}/{args.lang}"
 
     print(f"Loading model from: {model_path}")
 
