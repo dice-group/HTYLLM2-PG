@@ -1,6 +1,9 @@
 # python -m scripts.generate --lang de --prompt "Die Geschichte beginnt"
 # python -m scripts.generate --lang fr --prompt "L'histoire commence"
 # python -m scripts.generate --lang es --prompt "La historia comienza"
+# python -m scripts.generate --lang it --prompt "La storia inizia"
+# python -m scripts.generate --lang sv --prompt "Historien börjar"
+# python -m scripts.generate --lang multi --prompt "Die Geschichte beginnt"/"L'histoire commence"/"La historia comienza"/"La storia inizia"/"Historien börjar"
 import argparse
 from transformers import AutoTokenizer, AutoModelForCausalLM
 

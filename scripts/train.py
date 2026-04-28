@@ -110,8 +110,6 @@ def main():
     trainer.save_model(output_path)
     tokenizer.save_pretrained(output_path)
 
-    print("✅ Training completed successfully!")
-
 
 if __name__ == "__main__":
     main()
