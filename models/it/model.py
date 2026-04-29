@@ -1,10 +1,9 @@
-# Italian Model definition
 # italian LLM 
 ## Author : Anmol Raj Srivastav
 
 import math
 import torch
-from datasets import load_dataset
+from datasets import load_dataset, concatenate_datasets
 from transformers import (
     AutoTokenizer,
     GPT2Config,
@@ -19,13 +18,39 @@ from transformers import (
 # Dataset 
 
 
-print("Starting and Loaing Data")
+print("Loading dataset...")
 
 dataset = load_dataset(
     "opus_books",
     "en-it",   
     split="train[:80%]"   
 )
+
+#  convert OPUS into plain text format
+def format_opus(example):
+    return {"text": example["translation"]["it"]}
+
+dataset = dataset.map(format_opus)
+dataset = dataset.remove_columns(["translation"])
+
+
+wiki = load_dataset(
+    "wikimedia/wikipedia",
+    "20231101.it",
+    split="train[:1%]"
+)
+
+# Formatting wiki to match structure
+def format_wiki(example):
+    return {"text": example["text"]}
+
+wiki = wiki.map(format_wiki)
+
+
+wiki = wiki.remove_columns([c for c in wiki.column_names if c != "text"])
+
+# Merging datasets
+dataset = concatenate_datasets([dataset, wiki])
 
 
 # Tokenizer
@@ -38,15 +63,12 @@ tokenizer.pad_token = tokenizer.eos_token
 tokenizer.model_max_length = 128
 
 
-# Tokenization (to extract only italian text)
+# Tokenization 
 
 
 def tokenize_function(examples):
-   
-    texts = [t["it"] for t in examples["translation"]]
-
     return tokenizer(
-        texts,
+        examples["text"],
         truncation=True,
         max_length=128,
         padding="max_length"
@@ -57,7 +79,7 @@ print("Tokenizing dataset")
 tokenized_dataset = dataset.map(
     tokenize_function,
     batched=True,
-    remove_columns=["translation"]  
+    remove_columns=["text"]  
 )
 
 
@@ -101,7 +123,7 @@ data_collator = DataCollatorForLanguageModeling(
 training_args = TrainingArguments(
     output_dir="./italian_scratch_vm",
 
-    evaluation_strategy="steps",
+    eval_strategy="steps",
     eval_steps=500,
 
     logging_steps=50,
@@ -113,7 +135,7 @@ training_args = TrainingArguments(
 
     gradient_accumulation_steps=4,
 
-    num_train_epochs=5,
+    num_train_epochs=3,
 
     learning_rate=5e-4,
     weight_decay=0.01,
@@ -184,7 +206,7 @@ generator = pipeline(
 # User Input and Output
 
 
-print("\nITALIAN GPT CHAT MODE ")
+print("\n Italian LLM ")
 print("Type 'exit' to stop")
 
 while True:
