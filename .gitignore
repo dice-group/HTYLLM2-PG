@@ -1,6 +1,20 @@
+# Virtual environments
 venv/
+.venv/
+
+# Python cache/artifacts
 __pycache__/
 *.pyc
+.pytest_cache/
+
+# Jupyter artifacts
+.ipynb_checkpoints/
+
+# Local environment/config
 .env
 cmds.txt
 .vscode/
+
+# OS files
+.DS_Store
+
