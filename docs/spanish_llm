@@ -1,0 +1,167 @@
+#Spanish LLM (From Scratch)
+
+#Overview
+
+This project implements a lightweight Large Language Model trained from scratch for generating Spanish text.
+
+The model is based on a GPT-style transformer architecture and is trained using Spanish Wikipedia data. It learns language patterns such as grammar, vocabulary, and sentence structure directly from raw text.
+
+The goal is to build a compact, efficient Spanish language model suitable for experimentation and local deployment.
+
+
+#Data
+
+#Source:
+
+Spanish Wikipedia (wikimedia/wikipedia, dump: 20231101.es)
+
+Processing steps:
+
+Loaded full Wikipedia dataset using HuggingFace datasets
+Randomly shuffled dataset (seed = 42)
+Selected a subset of 20,000 articles
+Extracted only the "text" field
+
+Final dataset:
+
+Pure Spanish text corpus from Wikipedia
+No additional preprocessing or cleaning applied
+
+Tokenization
+Tokenizer: Byte-Level BPE (trained from scratch)
+Library: HuggingFace tokenizers
+
+Configuration:
+
+Vocabulary size: 20,000
+Minimum frequency: 2
+Special tokens:
+<s> (BOS)
+</s> (EOS)
+<pad>
+<unk>
+
+Process:
+
+Tokenizer trained directly on Spanish Wikipedia text
+Converts raw text into subword token IDs
+Enables efficient handling of rare and unknown words
+
+
+#Dataset Preparation
+
+Steps:
+
+Convert raw text into HuggingFace Dataset
+Tokenize text (no padding, truncation enabled)
+Concatenate token sequences
+Split into fixed-length chunks
+
+Configuration:
+
+Maximum sequence length: 128 tokens
+
+Final format:
+
+input_ids: tokenized sequences
+labels: same as input (causal language modeling)
+
+
+#Model Architecture
+Model type: GPT-2 (from scratch)
+Library: HuggingFace transformers
+
+Configuration:
+
+Vocabulary size: 20,000
+Context length: 128
+Embedding size: 512
+Number of layers: 8
+Number of attention heads: 8
+
+#Training
+Framework: HuggingFace Trainer
+Task: Causal Language Modeling
+
+Training settings:
+
+Epochs: 1
+Batch size: 4
+Learning rate: 3e-4
+Logging steps: 50
+Checkpoint saving: every 500 steps
+Mixed precision: Disabled (fp16=False)
+
+Hardware support:
+
+Uses Apple Metal (mps) if available
+Falls back to CPU otherwise
+
+
+#Pipeline
+
+Spanish Wikipedia Text
+   ↓
+Tokenizer Training (Byte-Level BPE)
+   ↓
+Tokenization
+   ↓
+Chunking (128 tokens)
+   ↓
+GPT-2 Model Initialization
+   ↓
+Training (Trainer API)
+   ↓
+Model Saving
+   ↓
+Interactive Chat Interface
+
+
+#Text Generation
+
+The model generates text using probabilistic sampling.
+
+Generation settings:
+
+Max length: 100
+Top-k sampling: 40
+Top-p (nucleus): 0.9
+Temperature: 0.7
+Repetition penalty: 1.2
+
+
+#Chat Interface
+
+A simple CLI-based chat loop is included.
+
+Usage:
+
+Run the script
+Enter prompts interactively
+Type exit or quit to stop
+
+
+You: Hola, ¿cómo estás?
+AI: Hola, ¿cómo estás hoy? Me gustaría hablar sobre...
+
+#Output
+
+Saved directories:
+
+./model_es        → trained model weights  
+./tokenizer_es    → tokenizer files (vocab + merges)  
+
+
+#Evaluation
+
+Currently, the model is evaluated implicitly via training loss.
+
+Possible metrics to add:
+
+Perplexity
+Validation split performance
+Text coherence analysis
+
+#Installation
+
+pip install torch transformers datasets tokenizers accelerate
