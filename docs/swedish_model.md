@@ -1,78 +1,136 @@
-# 🧠 NLP Model Training with Transformers
 
 This model monstrates how to train and use a transformer-based language model for text generation using the Hugging Face ecosystem.
 
 ---
 
-## 📌 Overview
-
-This notebook walks through the full workflow of training a Natural Language Processing (NLP) model, including:
-
-* Loading a dataset
-* Tokenizing text data
-* Training a model using the Trainer API
-* Generating text outputs
-
-The project is implemented step-by-step (without using high-level pipelines) 
+##  Overview
+This project focuses on building a Swedish language model using modern NLP tools such as Hugging Face Transformers and FastText.
+The workflow includes data collection, filtering, tokenization, training, and evaluation of a GPT-style model.
 ---
 
-## 🛠️ Technologies Used
+
+## Features
+
+* Streaming large-scale Swedish text dataset
+* Language filtering using FastText
+* Custom dataset preparation
+* Byte Pair Encoding (BPE) tokenizer training
+* GPT-based language model training
+* Model evaluation using Perplexity score
+
+---
+
+## Technologies Used
 
 * Python
 * PyTorch
 * Hugging Face Transformers
 * Hugging Face Datasets
+* tokenizers
+* fasttext
+* numpy
 * Jupyter Notebook
 
 ---
 
 
-## ⚙️ Installation
+##  Installation
 
 
 1. Install required libraries:
 
 ```
-pip install transformers datasets torch
+pip install datasets transformers tokenizers accelerate fasttext numpy==1.26.4
+---
+
+##  Usage
+
+1. Load Dataset:
+
+We use the C4 dataset (Swedish subset) in streaming mode:
 ```
+from datasets import load_dataset
+
+dataset = load_dataset("allenai/c4", "sv", split="train", streaming=True)
+```
+2. Language Detection
+
+FastText is used to ensure only Swedish text is processed:
+
+```
+import fasttext
+
+model = fasttext.load_model("lid.176.bin")
+```
+
+3. Data Filtering & Preparation
+* Filter Swedish-only text
+* Remove noisy/low-quality samples
+* Batch processing for efficiency
+* Target dataset size: 60,000 samples  and 20,000
+
+```
+TARGET_SIZE = 60000
+SKIP_PROB = 0.95
+BATCH_SIZE = 100
+
+
+TARGET_SIZE = 20000
+SKIP_PROB = 0.99
+BATCH_SIZE = 100
+
+```
+
+
+4. Tokenizer Training
+
+Train a Byte-Level BPE tokenizer:
+
+```
+# For 60,000 dataset
+from tokenizers import ByteLevelBPETokenizer
+
+tokenizer.train(
+    files=["data.jsonl"],
+    vocab_size=16000,
+    min_frequency=2
+)
+
+
+# For 20,000 dataset
+tokenizer = ByteLevelBPETokenizer()
+
+tokenizer.train(
+    files=["data.jsonl"],
+    vocab_size=16000,
+    min_frequency=2
+)
+```
+
+
+5.Model Configuration
+
+Define a lightweight GPT model:
+
+```
+
+config = GPT2Config(
+    vocab_size=16000,
+    n_layer=4,
+    n_head=4,
+    n_embd=256
+)
+
+```
+
+6. Model Training
+
+Train a GPT-style language model using the processed dataset and tokenizer.
+
 
 ---
 
-## 🚀 Usage
-
-1. Start Jupyter Notebook:
-
-```
-jupyter notebook
-```
-
-2. Open the notebook:
-
-```
-train_sv.ipynb
-```
-
-3. Run all cells step by step to:
-
-   * Load the dataset
-   * Tokenize the data
-   * Train the model (GPT2LMHeadModel)
-   * Generate text outputs
-
----
-
-## 🔄 Workflow
-
-The project follows this pipeline:
-
-1. Dataset loading
-2. Text preprocessing and tokenization
-3. Model initialization
-4. Training using Trainer API
-5. Text generation using `model.generate()`
-
-
-## 📊 Results
+##  Results
 
 * The model learns patterns from the dataset and generates coherent text
 * Training loss decreases over time
@@ -89,11 +147,17 @@ Output: Det var en gång för att göra i de inte på den det om vara en jag? Vi
 
 ---
 
-## 📌 Future Improvements
+## Perplexity evaluation score
 
-* Experiment with different transformer models
-* Tune hyperparameters for better performance
-* Add evaluation metrics
+```
+# For 20,000 dataset
 
+Perplexity score: 73.0935014832586  
+
+# For 60,000 dataset
+
+Perplexity score: 91.24984584584635
+
+```
 
 
